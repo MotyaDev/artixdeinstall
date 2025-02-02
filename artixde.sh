@@ -96,15 +96,18 @@ case $init_system in
     openrc)
         pacman -S --noconfirm $dm-openrc
         rc-update add $dm-openrc default
+        rc-update add $dm default
         ;;
     runit)
         pacman -S --noconfirm $dm-runit
         ln -sv /runit/sv/$dm-runit /run/runit/service/
+        ln -sv /runit/sv/$dm /run/runit/service/
         ;;
     *)
         echo "Unknown init system! Trying default runit..."
         pacman -S --noconfirm $dm-runit
         ln -sv /runit/sv/$dm-runit /run/runit/service/
+        ln -sv /runit/sv/$dm /run/runit/service/
         ;;
 esac
 
