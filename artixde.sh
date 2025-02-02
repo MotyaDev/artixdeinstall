@@ -20,6 +20,8 @@ get_init_system() {
         echo "openrc"
     elif grep -q 'runit-init' <<< "$init_process"; then
         echo "runit"
+    elif grep -q 'dinit' <<< "$init_process"; then
+        echo "dinit"
     else
         # ????
         if [ -d /etc/sv ]; then
@@ -103,11 +105,11 @@ case $init_system in
         ln -sv /runit/sv/$dm-runit /run/runit/service/
         ln -sv /runit/sv/$dm /run/runit/service/
         ;;
+    dinit)
+        pacman -S --noconfirm $dm-dinit
+        ;;
     *)
-        echo "Unknown init system! Trying default runit..."
-        pacman -S --noconfirm $dm-runit
-        ln -sv /runit/sv/$dm-runit /run/runit/service/
-        ln -sv /runit/sv/$dm /run/runit/service/
+        echo "Unknown init system! Try install manually"
         ;;
 esac
 
