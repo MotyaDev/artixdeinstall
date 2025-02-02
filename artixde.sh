@@ -107,6 +107,8 @@ case $init_system in
         ;;
     dinit)
         pacman -S --noconfirm $dm-dinit
+        dinitctl enable gdm
+        dinitctl enable gdm-dinit
         ;;
     *)
         echo "Unknown init system! Try install manually"
