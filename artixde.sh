@@ -47,6 +47,8 @@ case $de in
         ;;
 esac
 
+clear
+
 # Display Manager Selection
 PS3=$'\n'"Which DM you want to use? (number): "
 dm_options=("gdm" "sddm")
