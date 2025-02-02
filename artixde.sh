@@ -23,6 +23,9 @@ get_init_system() {
 
 echo -e "${cyan}Welcome to artixde.SH. This script will install DE for your minimal Artix/Arch linux.${normal}"
 
+
+echo -e "${cyan}Which DE you want to use? (number):${normal}"
+
 # Desktop Environment Selection
 PS3=$'\n'"Which DE you want to use? (number): "
 options=("gnome" "plasma" "cinnamon" "mate")
@@ -58,6 +61,8 @@ case $de in
 esac
 
 clear
+
+echo -e "${cyan}Which DM you want to use? (number):${normal}"
 
 # Display Manager Selection
 PS3=$'\n'"Which DM you want to use? (number): "
