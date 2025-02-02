@@ -110,8 +110,11 @@ case $init_system in
         ln -sf /etc/sv/$dm-runit /var/service
         ;;
     *)
-        echo "Unknown init system! Manual configuration required!"
-        exit 1
+        echo "Unknown init system! Manual configuration required!, but i try install to runit"
+        pacman -S --noconfirm $dm-runit
+        echo -e "${cyan}Registering Display Manager...${normal}"
+        ln -sf /etc/sv/$dm /var/service
+        ln -sf /etc/sv/$dm-runit /var/service
         ;;
 esac
 
