@@ -38,14 +38,19 @@ echo -e "${cyan}Welcome to artixde.SH. This script will install DE for your mini
 
 # DE select
 PS3=$'\n'"Which DE you want to use? (number): "
-options=("gnome" "plasma" "cinnamon" "mate")
+options=("gnome" "plasma" "cinnamon" "mate" "exit")
 select de in "${options[@]}"; do
     case $de in
-        "gnome"|"plasma"|"cinnamon"|"mate")
+        "gnome"|"plasma"|"cinnamon"|"mate"|"exit")
             break;;
         *) echo "Invalid option $REPLY";;
     esac
 done
+
+if [[ "${de}" == "exit" ]]; then
+    echo -e "${red}DE installation aborted.${normal}"
+    exit 1
+fi
 
 echo -e "${green}DE installation started! Your DE: ${de}${normal}"
 
