@@ -99,12 +99,12 @@ case $init_system in
         ;;
     runit)
         pacman -S --noconfirm $dm-runit
-        ln -sv /etc/sv/$dm-runit /var/service/
+        ln -sv /runit/sv/$dm-runit /run/runit/service/
         ;;
     *)
         echo "Unknown init system! Trying default runit..."
         pacman -S --noconfirm $dm-runit
-        ln -sv /etc/sv/$dm-runit /var/service/
+        ln -sv /runit/sv/$dm-runit /run/runit/service/
         ;;
 esac
 
