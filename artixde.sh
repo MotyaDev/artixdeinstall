@@ -78,7 +78,7 @@ esac
 clear
 
 # DM select
-echo -e "${cyan}Which DM you want to use? (number):${normal}"
+echo -e "${cyan}Which DM you want to use? (gdm is not RECOMMEND!) (number):${normal}"
 PS3=$'\n'"Select Display Manager: "
 dm_options=("gdm" "sddm")
 select dm in "${dm_options[@]}"; do
