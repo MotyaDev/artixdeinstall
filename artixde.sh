@@ -60,7 +60,7 @@ case $de in
         pacman -S --noconfirm xorg xorg-server plasma plasma-wayland-session kde-applications
         ;;
     "gnome")
-        pacman -S --noconfirm xorg xorg-server gnome dbus
+        pacman -S --noconfirm xorg xorg-server gnome dbus connman-gtk
         ;;
     "mate")
         pacman -S --noconfirm xorg xorg-server mate mate-extra system-config-printer blueman connman-gtk
