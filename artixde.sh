@@ -11,6 +11,16 @@ green="\033[1;32m"
 cyan="\033[0;36m"
 normal="\033[0m"
 
+get_init_system() {
+    case $(ps -p 1 -o comm=) in
+        systemd)    echo "systemd" ;;
+        init)       echo "sysvinit" ;;
+        openrc-init) echo "openrc" ;;
+        runit-init) echo "runit" ;;
+        *)          echo "unknown" ;;
+    esac
+}
+
 echo -e "${cyan}Welcome to artixde.SH. This script will install DE for your minimal Artix/Arch linux.${normal}"
 
 # Desktop Environment Selection
@@ -60,10 +70,32 @@ select dm in "${dm_options[@]}"; do
     esac
 done
 
-echo -e "${cyan}Installing Display Manager...${normal}"
-pacman -S --noconfirm $dm
+#pacman -S sddm-openrc or sddm-runit or sddm-s6 or sddm-dinit
 
-echo -e "${cyan}Registering Display Manager...${normal}"
-ln -sf /etc/sv/$dm /var/service
+echo -e "${cyan}Installing Display Manager...${normal}"
+
+init_system=$(get_init_system)
+
+case $init_system in
+    systemd)
+        echo "Systemd is not supported! Installation aborted"
+        ;;
+    openrc)
+        pacman -S --noconfirm $dm-openrc
+        echo -e "${cyan}Registering Display Manager...${normal}"
+        ln -sf /etc/sv/$dm /var/service
+        ln -sf /etc/sv/$dm-openrc /var/service
+        ;;
+    runit)
+        pacman -S --noconfirm $dm-runit
+        echo -e "${cyan}Registering Display Manager...${normal}"
+        ln -sf /etc/sv/$dm /var/service
+        ln -sf /etc/sv/$dm-runit /var/service
+        ;;
+    *)
+        echo "Unknown init system! Manual configuration required!"
+        exit 1
+        ;;
+esac
 
 echo -e "${green}Installation finished! Thanks for using the script!${normal}"
