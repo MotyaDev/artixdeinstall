@@ -21,6 +21,18 @@ get_init_system() {
     esac
 }
 
+detect_init() {
+    if command -v systemctl >/dev/null; then
+        echo "systemd"
+    elif command -v openrc >/dev/null; then
+        echo "openrc"
+    elif command -v sv >/dev/null; then
+        echo "runit"
+    else
+        echo "unknown"
+    fi
+}
+
 echo -e "${cyan}Welcome to artixde.SH. This script will install DE for your minimal Artix/Arch linux.${normal}"
 
 
