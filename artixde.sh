@@ -12,33 +12,29 @@ cyan="\033[0;36m"
 normal="\033[0m"
 
 get_init_system() {
-    case $(ps -p 1 -o comm=) in
-        systemd)    echo "systemd" ;;
-        init)       echo "sysvinit" ;;
-        openrc-init) echo "openrc" ;;
-        runit-init) echo "runit" ;;
-        *)          echo "unknown" ;;
-    esac
-}
-
-detect_init() {
-    if command -v systemctl >/dev/null; then
+    # Get init
+    init_process=$(ps -p 1 -o comm=)
+    if grep -q 'systemd' <<< "$init_process"; then
         echo "systemd"
-    elif command -v openrc >/dev/null; then
+    elif grep -q 'openrc-init' <<< "$init_process"; then
         echo "openrc"
-    elif command -v sv >/dev/null; then
+    elif grep -q 'runit-init' <<< "$init_process"; then
         echo "runit"
     else
-        echo "unknown"
+        # ????
+        if [ -d /etc/sv ]; then
+            echo "runit"
+        elif [ -f /etc/inittab ]; then
+            echo "sysvinit"
+        else
+            echo "unknown"
+        fi
     fi
 }
 
 echo -e "${cyan}Welcome to artixde.SH. This script will install DE for your minimal Artix/Arch linux.${normal}"
 
-
-echo -e "${cyan}Which DE you want to use? (number):${normal}"
-
-# Desktop Environment Selection
+# DE select
 PS3=$'\n'"Which DE you want to use? (number): "
 options=("gnome" "plasma" "cinnamon" "mate")
 select de in "${options[@]}"; do
@@ -51,11 +47,11 @@ done
 
 echo -e "${green}DE installation started! Your DE: ${de}${normal}"
 
-# Update system
+# system update
 echo -e "${cyan}Updating system...${normal}"
 pacman -Syyu --noconfirm
 
-# Install packages
+# installing packages
 echo -e "${cyan}Installing packages...${normal}"
 case $de in
     "plasma")
@@ -74,10 +70,9 @@ esac
 
 clear
 
+# DM select
 echo -e "${cyan}Which DM you want to use? (number):${normal}"
-
-# Display Manager Selection
-PS3=$'\n'"Which DM you want to use? (number): "
+PS3=$'\n'"Select Display Manager: "
 dm_options=("gdm" "sddm")
 select dm in "${dm_options[@]}"; do
     case $dm in
@@ -87,34 +82,29 @@ select dm in "${dm_options[@]}"; do
     esac
 done
 
-#pacman -S sddm-openrc or sddm-runit or sddm-s6 or sddm-dinit
-
-echo -e "${cyan}Installing Display Manager...${normal}"
-
+# Get init system
 init_system=$(get_init_system)
+echo -e "${cyan}Detected init system: ${init_system}${normal}"
 
+# Installing dm and configuring
+echo -e "${cyan}Installing Display Manager...${normal}"
 case $init_system in
     systemd)
-        echo "Systemd is not supported! Installation aborted"
+        pacman -S --noconfirm $dm
+        systemctl enable $dm.service
         ;;
     openrc)
         pacman -S --noconfirm $dm-openrc
-        echo -e "${cyan}Registering Display Manager...${normal}"
-        ln -sf /etc/sv/$dm /var/service
-        ln -sf /etc/sv/$dm-openrc /var/service
+        rc-update add $dm-openrc default
         ;;
     runit)
         pacman -S --noconfirm $dm-runit
-        echo -e "${cyan}Registering Display Manager...${normal}"
-        ln -sf /etc/sv/$dm /var/service
-        ln -sf /etc/sv/$dm-runit /var/service
+        ln -sv /etc/sv/$dm-runit /var/service/
         ;;
     *)
-        echo "Unknown init system! Manual configuration required!, but i try install to runit"
+        echo "Unknown init system! Trying default runit..."
         pacman -S --noconfirm $dm-runit
-        echo -e "${cyan}Registering Display Manager...${normal}"
-        ln -sf /etc/sv/$dm /var/service
-        ln -sf /etc/sv/$dm-runit /var/service
+        ln -sv /etc/sv/$dm-runit /var/service/
         ;;
 esac
 
