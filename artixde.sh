@@ -14,7 +14,7 @@ normal="\033[0m"
 echo -e "${cyan}Welcome to artixde.SH. This script will install DE for your minimal Artix/Arch linux.${normal}"
 
 # Desktop Environment Selection
-PS3=$'\n'"Which DE you want to use? (gnome, plasma, cinnamon, mate): "
+PS3=$'\n'"Which DE you want to use? (number): "
 options=("gnome" "plasma" "cinnamon" "mate")
 select de in "${options[@]}"; do
     case $de in
@@ -48,7 +48,7 @@ case $de in
 esac
 
 # Display Manager Selection
-PS3=$'\n'"Which DM you want to use? (gdm, sddm): "
+PS3=$'\n'"Which DM you want to use? (number): "
 dm_options=("gdm" "sddm")
 select dm in "${dm_options[@]}"; do
     case $dm in
