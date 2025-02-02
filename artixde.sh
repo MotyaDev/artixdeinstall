@@ -11,6 +11,10 @@ export green="\033[1;32m"
 export cyan="\033[0;36m"
 export normal="\033[0m"
 
+echo -ne "${cyan}Welcome to artixde.SH. This script will install DE for your minimal Artix/Arch linux."
+
+echo -ne "${cyan}Select a DE for you"
+
 # This updates your system
 pacman -Syyu
 
